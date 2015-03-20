@@ -15,14 +15,22 @@
  * Require arguments
  */
 if (!isset($argv[1])) {
-    exit("You need to give up a name.\r\n");
+    exit("You need to give up a plugin name.\r\n");
+}
+if (!isset($argv[2])) {
+    exit("You need to give up a model name.\r\n");
+}
+if (!isset($argv[3])) {
+    exit("You need to give up a section name.\r\n");
 }
 
 /**
  * Get arguments
  */
 $name = $argv[1];
-$destination = isset($argv[2]) ? $argv[2] : '.';
+$model = $argv[2];
+$section = $argv[3];
+$destination = isset($argv[4]) ? $argv[4] : '.';
 
 /**
  * Make sure destination dir exists
@@ -67,13 +75,29 @@ chdir($name);
 $directory = new RecursiveDirectoryIterator(".", RecursiveDirectoryIterator::SKIP_DOTS);
 $files = new RecursiveIteratorIterator($directory, RecursiveIteratorIterator::SELF_FIRST);
 foreach ($files as $file) {
-    $subPath = $files->getSubPathName();
-    if (!$file->isDir()) {
-        
-        // Rename files
-        if (stristr($file, 'Events')) {
-            rename($file, str_replace('Events', ucfirst($name), $file));
-        }
 
+    // Should be a dir
+    if (!$file->isDir()) {
+
+        // Modify file name
+        $modified = str_replace('calendars', $section.'s', str_replace('Calendar', ucfirst($section), str_replace('Event', ucfirst($model), str_replace('Events', ucfirst($name), $file))));
+
+        // Check if something's modified
+        if($modified != $file) {
+
+            // Log
+            echo "- Renaming " . $file . " to " . $modified . "\r\n";
+
+            // Ensure directory
+            @mkdir(dirname($modified));
+
+            // Rename
+            rename($file, $modified);
+        }
     }
 }
+
+/**
+ * Cleanup
+ */
+exec('rm -rf templates/calendars');
