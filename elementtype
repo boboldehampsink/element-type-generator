@@ -1,0 +1,79 @@
+#!/usr/bin/php
+<?php
+/**
+ * elementtype
+ *
+ * This script will generate a basic Craft Element Type based on
+ * the Events sample plugin by Pixel & Tonic
+ *
+ * @author    Bob Olde Hampsink <b.oldehampsink@itmundi.nl>
+ * @copyright Copyright (c) 2015, Bob Olde Hampsink
+ * @link      http://github.com/boboldehampsink
+ */
+
+/**
+ * Require arguments
+ */
+if (!isset($argv[1])) {
+    exit("You need to give up a name.\r\n");
+}
+
+/**
+ * Get arguments
+ */
+$name = $argv[1];
+$destination = isset($argv[2]) ? $argv[2] : '.';
+
+/**
+ * Make sure destination dir exists
+ */
+@mkdir($destination);
+
+/**
+ * Go into destination dir
+ */
+chdir($destination);
+
+/**
+ * Log this
+ */
+echo "Preparing destination " . realpath($destination) . "\r\n";
+
+/**
+ * Clone the sample plugin repo
+ */
+exec('git clone https://github.com/pixelandtonic/Events.git');
+
+/**
+ * Move events plugin and rename
+ * and delete old dir
+ */
+rename('Events/events', $name);
+exec('rm -rf Events');
+
+/**
+ * Log this
+ */
+echo "Used Events to create new Element Type structure\r\n";
+
+/**
+ * Go into ElementType dir
+ */
+chdir($name);
+
+/**
+ * Loop through all files
+ */
+$directory = new RecursiveDirectoryIterator(".", RecursiveDirectoryIterator::SKIP_DOTS);
+$files = new RecursiveIteratorIterator($directory, RecursiveIteratorIterator::SELF_FIRST);
+foreach ($files as $file) {
+    $subPath = $files->getSubPathName();
+    if (!$file->isDir()) {
+        
+        // Rename files
+        if (stristr($file, 'Events')) {
+            rename($file, str_replace('Events', ucfirst($name), $file));
+        }
+
+    }
+}
