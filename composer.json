@@ -1,0 +1,13 @@
+{
+    "name": "boboldehampsink/element-type-generator",
+    "type": "application",
+    "description": "This script will generate a basic Craft Element Type based on the Events sample plugin by Pixel & Tonic",
+    "authors": [
+        {
+            "name": "Bob Olde Hampsink",
+            "email": "b.oldehampsink@itmundi.nl"
+        }
+    ],
+    "require": {},
+    "bin": ["elementtype"],
+}
