@@ -9,5 +9,5 @@
         }
     ],
     "require": {},
-    "bin": ["elementtype"],
+    "bin": ["elementtype"]
 }
