@@ -56,7 +56,7 @@ exec('git clone https://github.com/pixelandtonic/Events.git');
  * Move events plugin and rename
  * and delete old dir
  */
-rename('Events/events', $name);
+rename('Events/events', strtolower($name));
 exec('rm -rf Events');
 
 /**
@@ -89,7 +89,7 @@ foreach ($files as $file) {
             echo "- Renaming " . $file . " to " . $modified . "\r\n";
 
             // Ensure directory
-            @mkdir(dirname($modified));
+            @mkdir(strtolower(dirname($modified)));
 
             // Rename
             rename($file, $modified);
