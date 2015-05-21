@@ -80,7 +80,10 @@ foreach ($files as $file) {
     if (!$file->isDir()) {
 
         // Modify file name
-        $modified = str_replace('calendars', $section.'s', str_replace('Calendar', ucfirst($section), str_replace('Event', ucfirst($model), str_replace('Events', ucfirst($name), $file))));
+        $modified = str_replace('calendars', $section.'s', $file);
+        $modified = str_replace('Calendar', ucfirst($section), $modified);
+        $modified = str_replace('Event', ucfirst($model), $modified);
+        $modified = str_replace('Events', ucfirst($name), $modified);
 
         // Check if something's modified
         if($modified != $file) {
@@ -94,6 +97,25 @@ foreach ($files as $file) {
             // Rename
             rename($file, $modified);
         }
+
+        // Now open up file and rewrite contents
+        $contents = file_get_contents($modified);
+
+        // Log
+        echo "- Renaming contents of " . $modified . "\r\n";
+
+        // Rename
+        $touched = str_replace('Events', ucfirst($name), $contents);
+        $touched = str_replace('events', strtolower($name), $touched);
+        $touched = str_replace('Event', ucfirst($model), $touched);
+        $touched = str_replace('event', strtolower($model), $touched);
+        $touched = str_replace('Calendars', ucfirst($section).'s', $touched);
+        $touched = str_replace('calendars', strtolower($section).'s', $touched);
+        $touched = str_replace('Calendar', ucfirst($section), $touched);
+        $touched = str_replace('calendar', strtolower($section), $touched);
+        
+        // Save
+        file_put_contents($modified, $touched);
     }
 }
 
